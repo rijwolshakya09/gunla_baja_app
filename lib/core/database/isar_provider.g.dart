@@ -1,0 +1,26 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'isar_provider.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+String _$isarHash() => r'85c568d78650f711d89daf97fc6e5e3675e4e142';
+
+/// Provider for Isar database instance
+///
+/// Copied from [isar].
+@ProviderFor(isar)
+final isarProvider = FutureProvider<Isar>.internal(
+  isar,
+  name: r'isarProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$isarHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef IsarRef = FutureProviderRef<Isar>;
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
