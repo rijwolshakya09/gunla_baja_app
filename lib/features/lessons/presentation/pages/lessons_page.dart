@@ -91,6 +91,14 @@ class LessonsPage extends ConsumerWidget {
               ),
             ),
           ),
+          actions: [
+            // ADD THIS ADMIN BUTTON
+            IconButton(
+              icon: const Icon(Icons.admin_panel_settings),
+              onPressed: () => context.push('/admin'),
+              tooltip: 'Admin Panel',
+            ),
+          ],
         ),
 
         // Progress Header
