@@ -1,5 +1,8 @@
+import 'package:gunla_baja_flutter/core/services/supabase_service.dart';
+import 'package:gunla_baja_flutter/core/services/sync_service.dart';
+import 'package:gunla_baja_flutter/data/models/user_progress_model.dart';
+import 'package:gunla_baja_flutter/data/repositories/bole_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../../data/repositories/bole_repository.dart';
 import '../../../data/repositories/lesson_repository.dart';
 import '../../../domain/entities/lesson_entity.dart';
 
@@ -33,25 +36,64 @@ class LessonActions extends _$LessonActions {
 
   /// Complete a bole in lesson
   Future<void> completeBole(String lessonId, String boleId) async {
-    final lessonRepo = await ref.read(lessonRepositoryProvider.future);
-    final boleRepo = await ref.read(boleRepositoryProvider.future);
+    try {
+      final lessonRepo = await ref.read(lessonRepositoryProvider.future);
+      final boleRepo = await ref.read(boleRepositoryProvider.future);
 
-    // Mark bole as completed
-    await boleRepo.markBoleCompleted(boleId);
+      // Mark bole as completed
+      await boleRepo.markBoleCompleted(boleId);
 
-    // Update lesson progress
-    final stats = await boleRepo.getLessonCompletionStats(lessonId);
-    final isCompleted = stats['completed'] == stats['total'];
+      // Update lesson progress
+      final stats = await boleRepo.getLessonCompletionStats(lessonId);
+      final isCompleted = stats['completed'] == stats['total'];
 
-    await lessonRepo.updateLessonCompletion(
-      lessonId,
-      isCompleted,
-      stats['completed']!,
-    );
+      await lessonRepo.updateLessonCompletion(
+        lessonId,
+        isCompleted,
+        stats['completed']!,
+      );
 
-    // If lesson completed, unlock next lesson
-    if (isCompleted) {
-      await lessonRepo.shouldUnlockNextLesson(lessonId);
+      // If lesson completed, unlock next lesson
+      if (isCompleted) {
+        await lessonRepo.shouldUnlockNextLesson(lessonId);
+      }
+
+      // Upload progress to Supabase (if online) - non-blocking
+      _uploadProgressToCloud(lessonId, stats, isCompleted);
+    } catch (e) {
+      print('Error completing bole: $e');
+      throw Exception('Failed to complete bole: $e');
+    }
+  }
+
+  /// Upload progress to cloud (non-blocking)
+  Future<void> _uploadProgressToCloud(
+    String lessonId,
+    Map<String, int> stats,
+    bool isCompleted,
+  ) async {
+    try {
+      final syncService = await ref.read(syncServiceProvider.future);
+      final supabase = ref.read(supabaseProvider);
+      final userId = supabase.auth.currentUser?.id;
+
+      if (userId != null) {
+        // Create progress model
+        final progress = UserProgressModel(
+          id: '${userId}_$lessonId',
+          userId: userId,
+          lessonId: lessonId,
+          completedBoles: stats['completed']!,
+          totalBoles: stats['total']!,
+          isCompleted: isCompleted,
+          lastPracticedAt: DateTime.now(),
+        );
+
+        await syncService.uploadUserProgress(progress);
+      }
+    } catch (e) {
+      // Silent fail - progress is already saved locally
+      print('Failed to upload progress to cloud: $e');
     }
   }
 

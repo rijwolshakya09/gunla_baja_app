@@ -1,24 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/presentation/splash_screen.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/initialization_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  runApp(
-    const ProviderScope(
-      child: GunlaBajaApp(),
-    ),
-  );
+
+  runApp(const ProviderScope(child: GunlaBajaApp()));
 }
 
-class GunlaBajaApp extends ConsumerWidget {
+class GunlaBajaApp extends ConsumerStatefulWidget {
   const GunlaBajaApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GunlaBajaApp> createState() => _GunlaBajaAppState();
+}
+
+class _GunlaBajaAppState extends ConsumerState<GunlaBajaApp> {
+  bool _showSplash = true;
+
+  void _onSplashComplete() {
+    setState(() {
+      _showSplash = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Show splash screen first
+    if (_showSplash) {
+      return MaterialApp(
+        title: 'गुँला बाजा',
+        theme: AppTheme.lightTheme,
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen(onComplete: _onSplashComplete),
+      );
+    }
+
+    // After splash, show main app with initialization
     final initAsync = ref.watch(appInitializationProvider);
     final router = ref.watch(appRouterProvider);
 

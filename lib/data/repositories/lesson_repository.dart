@@ -1,7 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/lesson_model.dart';
-import '../models/bole_model.dart';
 import '../../core/database/isar_provider.dart';
 
 part 'lesson_repository.g.dart';
@@ -30,6 +29,37 @@ class LessonRepository {
   Future<void> saveLessons(List<LessonModel> lessons) async {
     await _isar.writeTxn(() async {
       await _isar.lessonModels.putAll(lessons);
+    });
+  }
+
+  /// Save lessons while preserving local progress (for syncing)
+  Future<void> saveLessonsPreservingProgress(List<LessonModel> lessons) async {
+    await _isar.writeTxn(() async {
+      for (final lesson in lessons) {
+        // Check if lesson already exists
+        final existing = await _isar.lessonModels
+            .where()
+            .filter()
+            .idEqualTo(lesson.id)
+            .findFirst();
+
+        if (existing != null) {
+          // Preserve local progress and unlock status
+          final updated = lesson.copyWith(
+            isUnlocked: existing.isUnlocked,
+            isCompleted: existing.isCompleted,
+            completedBoles: existing.completedBoles,
+          );
+          await _isar.lessonModels.put(updated);
+          print(
+            'Updated lesson ${lesson.titleNepali}, preserved progress: ${existing.completedBoles}/${lesson.totalBoles}',
+          );
+        } else {
+          // New lesson, save as is
+          await _isar.lessonModels.put(lesson);
+          print('Added new lesson ${lesson.titleNepali}');
+        }
+      }
     });
   }
 

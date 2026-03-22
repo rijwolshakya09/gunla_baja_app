@@ -137,7 +137,7 @@ class LessonProvider extends AutoDisposeStreamProvider<LessonEntity?> {
   }
 }
 
-String _$lessonActionsHash() => r'89e01891d79f98b59e2ed135d4c8614bba907543';
+String _$lessonActionsHash() => r'b3d22a04f95cdf00ab7ffc06a2f2bd5613bac2c6';
 
 /// Provider for lesson actions
 ///

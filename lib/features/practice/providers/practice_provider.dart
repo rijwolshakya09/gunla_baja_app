@@ -79,26 +79,49 @@ class PracticeSession extends _$PracticeSession {
 
   /// Mark current bole as completed and move to next
   Future<void> completeBole() async {
-    final currentState = state.requireValue;
-    final currentBole = currentState.currentBole;
+    try {
+      final currentState = state.requireValue;
+      final currentBole = currentState.currentBole;
 
-    if (currentBole == null) return;
+      if (currentBole == null) return;
 
-    final boleRepo = await ref.read(boleRepositoryProvider.future);
-    await boleRepo.markBoleCompleted(currentBole.id);
+      // Mark bole as completed
+      final boleRepo = await ref.read(boleRepositoryProvider.future);
+      await boleRepo.markBoleCompleted(currentBole.id);
 
-    // Update lesson progress
-    final lessonActions = ref.read(lessonActionsProvider.notifier);
-    await lessonActions.completeBole(currentState.lessonId, currentBole.id);
+      // Update lesson progress via lesson actions
+      final lessonActions = ref.read(lessonActionsProvider.notifier);
+      await lessonActions.completeBole(currentState.lessonId, currentBole.id);
 
-    // Move to next bole or complete session
-    final nextIndex = currentState.currentIndex + 1;
-    final isLastBole = nextIndex >= currentState.boles.length;
+      // Reload boles to get updated completion status
+      final updatedBoles = await boleRepo.getBolesByLesson(
+        currentState.lessonId,
+      );
+      final updatedBoleEntities = updatedBoles
+          .map((m) => BoleEntity.fromModel(m))
+          .toList();
 
-    if (isLastBole) {
-      state = AsyncValue.data(currentState.copyWith(isCompleted: true));
-    } else {
-      state = AsyncValue.data(currentState.copyWith(currentIndex: nextIndex));
+      // Move to next bole or complete session
+      final nextIndex = currentState.currentIndex + 1;
+      final isLastBole = nextIndex >= updatedBoleEntities.length;
+
+      if (isLastBole) {
+        // All boles completed
+        state = AsyncValue.data(
+          currentState.copyWith(boles: updatedBoleEntities, isCompleted: true),
+        );
+      } else {
+        // Move to next bole
+        state = AsyncValue.data(
+          currentState.copyWith(
+            boles: updatedBoleEntities,
+            currentIndex: nextIndex,
+          ),
+        );
+      }
+    } catch (e, stackTrace) {
+      print('Error completing bole: $e');
+      state = AsyncValue.error(e, stackTrace);
     }
   }
 
@@ -129,6 +152,7 @@ class PracticeSession extends _$PracticeSession {
 
     if (currentBole == null) return;
 
+    // Increment attempts
     final boleRepo = await ref.read(boleRepositoryProvider.future);
     await boleRepo.incrementBoleAttempts(currentBole.id);
   }

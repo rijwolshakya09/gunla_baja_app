@@ -122,7 +122,7 @@ class LessonBolesProvider extends AutoDisposeStreamProvider<List<BoleEntity>> {
   }
 }
 
-String _$practiceSessionHash() => r'46f5b07ab1f986a4e799969655cf612422bea23b';
+String _$practiceSessionHash() => r'acabac0560394e2747c0d847def7c50b21e2286f';
 
 abstract class _$PracticeSession
     extends BuildlessAutoDisposeAsyncNotifier<PracticeState> {

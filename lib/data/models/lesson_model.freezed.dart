@@ -39,12 +39,25 @@ mixin _$LessonModel {
   @JsonKey(name: 'is_published')
   bool get isPublished => throw _privateConstructorUsedError;
   @JsonKey(name: 'total_boles')
-  int get totalBoles => throw _privateConstructorUsedError;
+  int get totalBoles =>
+      throw _privateConstructorUsedError; // NEW FIELDS FOR ADVANCED LESSONS
+  @JsonKey(name: 'has_variations')
+  bool get hasVariations => throw _privateConstructorUsedError;
+  @JsonKey(name: 'has_sections')
+  bool get hasSections => throw _privateConstructorUsedError;
+  @JsonKey(name: 'practice_time_minutes')
+  int get practiceTimeMinutes => throw _privateConstructorUsedError;
+  @JsonKey(name: 'prerequisites')
+  List<String> get prerequisites =>
+      throw _privateConstructorUsedError; // lesson IDs
+  @JsonKey(name: 'traditional_notation_url')
+  String? get traditionalNotationUrl => throw _privateConstructorUsedError;
+  @JsonKey(name: 'video_tutorial_url')
+  String? get videoTutorialUrl => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   DateTime? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'updated_at')
-  DateTime? get updatedAt =>
-      throw _privateConstructorUsedError; // Local fields (not from server)
+  DateTime? get updatedAt => throw _privateConstructorUsedError; // Local fields
   bool get isUnlocked => throw _privateConstructorUsedError;
   bool get isCompleted => throw _privateConstructorUsedError;
   int get completedBoles => throw _privateConstructorUsedError;
@@ -72,6 +85,12 @@ abstract class $LessonModelCopyWith<$Res> {
       @JsonKey(name: 'thumbnail_url') String? thumbnailUrl,
       @JsonKey(name: 'is_published') bool isPublished,
       @JsonKey(name: 'total_boles') int totalBoles,
+      @JsonKey(name: 'has_variations') bool hasVariations,
+      @JsonKey(name: 'has_sections') bool hasSections,
+      @JsonKey(name: 'practice_time_minutes') int practiceTimeMinutes,
+      @JsonKey(name: 'prerequisites') List<String> prerequisites,
+      @JsonKey(name: 'traditional_notation_url') String? traditionalNotationUrl,
+      @JsonKey(name: 'video_tutorial_url') String? videoTutorialUrl,
       @JsonKey(name: 'created_at') DateTime? createdAt,
       @JsonKey(name: 'updated_at') DateTime? updatedAt,
       bool isUnlocked,
@@ -102,6 +121,12 @@ class _$LessonModelCopyWithImpl<$Res, $Val extends LessonModel>
     Object? thumbnailUrl = freezed,
     Object? isPublished = null,
     Object? totalBoles = null,
+    Object? hasVariations = null,
+    Object? hasSections = null,
+    Object? practiceTimeMinutes = null,
+    Object? prerequisites = null,
+    Object? traditionalNotationUrl = freezed,
+    Object? videoTutorialUrl = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? isUnlocked = null,
@@ -149,6 +174,30 @@ class _$LessonModelCopyWithImpl<$Res, $Val extends LessonModel>
           ? _value.totalBoles
           : totalBoles // ignore: cast_nullable_to_non_nullable
               as int,
+      hasVariations: null == hasVariations
+          ? _value.hasVariations
+          : hasVariations // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasSections: null == hasSections
+          ? _value.hasSections
+          : hasSections // ignore: cast_nullable_to_non_nullable
+              as bool,
+      practiceTimeMinutes: null == practiceTimeMinutes
+          ? _value.practiceTimeMinutes
+          : practiceTimeMinutes // ignore: cast_nullable_to_non_nullable
+              as int,
+      prerequisites: null == prerequisites
+          ? _value.prerequisites
+          : prerequisites // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      traditionalNotationUrl: freezed == traditionalNotationUrl
+          ? _value.traditionalNotationUrl
+          : traditionalNotationUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      videoTutorialUrl: freezed == videoTutorialUrl
+          ? _value.videoTutorialUrl
+          : videoTutorialUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -192,6 +241,12 @@ abstract class _$$_LessonModelCopyWith<$Res>
       @JsonKey(name: 'thumbnail_url') String? thumbnailUrl,
       @JsonKey(name: 'is_published') bool isPublished,
       @JsonKey(name: 'total_boles') int totalBoles,
+      @JsonKey(name: 'has_variations') bool hasVariations,
+      @JsonKey(name: 'has_sections') bool hasSections,
+      @JsonKey(name: 'practice_time_minutes') int practiceTimeMinutes,
+      @JsonKey(name: 'prerequisites') List<String> prerequisites,
+      @JsonKey(name: 'traditional_notation_url') String? traditionalNotationUrl,
+      @JsonKey(name: 'video_tutorial_url') String? videoTutorialUrl,
       @JsonKey(name: 'created_at') DateTime? createdAt,
       @JsonKey(name: 'updated_at') DateTime? updatedAt,
       bool isUnlocked,
@@ -220,6 +275,12 @@ class __$$_LessonModelCopyWithImpl<$Res>
     Object? thumbnailUrl = freezed,
     Object? isPublished = null,
     Object? totalBoles = null,
+    Object? hasVariations = null,
+    Object? hasSections = null,
+    Object? practiceTimeMinutes = null,
+    Object? prerequisites = null,
+    Object? traditionalNotationUrl = freezed,
+    Object? videoTutorialUrl = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? isUnlocked = null,
@@ -267,6 +328,30 @@ class __$$_LessonModelCopyWithImpl<$Res>
           ? _value.totalBoles
           : totalBoles // ignore: cast_nullable_to_non_nullable
               as int,
+      hasVariations: null == hasVariations
+          ? _value.hasVariations
+          : hasVariations // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasSections: null == hasSections
+          ? _value.hasSections
+          : hasSections // ignore: cast_nullable_to_non_nullable
+              as bool,
+      practiceTimeMinutes: null == practiceTimeMinutes
+          ? _value.practiceTimeMinutes
+          : practiceTimeMinutes // ignore: cast_nullable_to_non_nullable
+              as int,
+      prerequisites: null == prerequisites
+          ? _value._prerequisites
+          : prerequisites // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      traditionalNotationUrl: freezed == traditionalNotationUrl
+          ? _value.traditionalNotationUrl
+          : traditionalNotationUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      videoTutorialUrl: freezed == videoTutorialUrl
+          ? _value.videoTutorialUrl
+          : videoTutorialUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -305,12 +390,20 @@ class _$_LessonModel extends _LessonModel {
       @JsonKey(name: 'thumbnail_url') this.thumbnailUrl,
       @JsonKey(name: 'is_published') this.isPublished = false,
       @JsonKey(name: 'total_boles') this.totalBoles = 0,
+      @JsonKey(name: 'has_variations') this.hasVariations = false,
+      @JsonKey(name: 'has_sections') this.hasSections = false,
+      @JsonKey(name: 'practice_time_minutes') this.practiceTimeMinutes = 10,
+      @JsonKey(name: 'prerequisites')
+      final List<String> prerequisites = const [],
+      @JsonKey(name: 'traditional_notation_url') this.traditionalNotationUrl,
+      @JsonKey(name: 'video_tutorial_url') this.videoTutorialUrl,
       @JsonKey(name: 'created_at') this.createdAt,
       @JsonKey(name: 'updated_at') this.updatedAt,
       this.isUnlocked = false,
       this.isCompleted = false,
       this.completedBoles = 0})
-      : super._();
+      : _prerequisites = prerequisites,
+        super._();
 
   factory _$_LessonModel.fromJson(Map<String, dynamic> json) =>
       _$$_LessonModelFromJson(json);
@@ -345,13 +438,39 @@ class _$_LessonModel extends _LessonModel {
   @override
   @JsonKey(name: 'total_boles')
   final int totalBoles;
+// NEW FIELDS FOR ADVANCED LESSONS
+  @override
+  @JsonKey(name: 'has_variations')
+  final bool hasVariations;
+  @override
+  @JsonKey(name: 'has_sections')
+  final bool hasSections;
+  @override
+  @JsonKey(name: 'practice_time_minutes')
+  final int practiceTimeMinutes;
+  final List<String> _prerequisites;
+  @override
+  @JsonKey(name: 'prerequisites')
+  List<String> get prerequisites {
+    if (_prerequisites is EqualUnmodifiableListView) return _prerequisites;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_prerequisites);
+  }
+
+// lesson IDs
+  @override
+  @JsonKey(name: 'traditional_notation_url')
+  final String? traditionalNotationUrl;
+  @override
+  @JsonKey(name: 'video_tutorial_url')
+  final String? videoTutorialUrl;
   @override
   @JsonKey(name: 'created_at')
   final DateTime? createdAt;
   @override
   @JsonKey(name: 'updated_at')
   final DateTime? updatedAt;
-// Local fields (not from server)
+// Local fields
   @override
   @JsonKey()
   final bool isUnlocked;
@@ -364,7 +483,7 @@ class _$_LessonModel extends _LessonModel {
 
   @override
   String toString() {
-    return 'LessonModel(id: $id, titleNepali: $titleNepali, titleEnglish: $titleEnglish, descriptionNepali: $descriptionNepali, descriptionEnglish: $descriptionEnglish, level: $level, orderIndex: $orderIndex, thumbnailUrl: $thumbnailUrl, isPublished: $isPublished, totalBoles: $totalBoles, createdAt: $createdAt, updatedAt: $updatedAt, isUnlocked: $isUnlocked, isCompleted: $isCompleted, completedBoles: $completedBoles)';
+    return 'LessonModel(id: $id, titleNepali: $titleNepali, titleEnglish: $titleEnglish, descriptionNepali: $descriptionNepali, descriptionEnglish: $descriptionEnglish, level: $level, orderIndex: $orderIndex, thumbnailUrl: $thumbnailUrl, isPublished: $isPublished, totalBoles: $totalBoles, hasVariations: $hasVariations, hasSections: $hasSections, practiceTimeMinutes: $practiceTimeMinutes, prerequisites: $prerequisites, traditionalNotationUrl: $traditionalNotationUrl, videoTutorialUrl: $videoTutorialUrl, createdAt: $createdAt, updatedAt: $updatedAt, isUnlocked: $isUnlocked, isCompleted: $isCompleted, completedBoles: $completedBoles)';
   }
 
   @override
@@ -390,6 +509,18 @@ class _$_LessonModel extends _LessonModel {
                 other.isPublished == isPublished) &&
             (identical(other.totalBoles, totalBoles) ||
                 other.totalBoles == totalBoles) &&
+            (identical(other.hasVariations, hasVariations) ||
+                other.hasVariations == hasVariations) &&
+            (identical(other.hasSections, hasSections) ||
+                other.hasSections == hasSections) &&
+            (identical(other.practiceTimeMinutes, practiceTimeMinutes) ||
+                other.practiceTimeMinutes == practiceTimeMinutes) &&
+            const DeepCollectionEquality()
+                .equals(other._prerequisites, _prerequisites) &&
+            (identical(other.traditionalNotationUrl, traditionalNotationUrl) ||
+                other.traditionalNotationUrl == traditionalNotationUrl) &&
+            (identical(other.videoTutorialUrl, videoTutorialUrl) ||
+                other.videoTutorialUrl == videoTutorialUrl) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -404,23 +535,30 @@ class _$_LessonModel extends _LessonModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      titleNepali,
-      titleEnglish,
-      descriptionNepali,
-      descriptionEnglish,
-      level,
-      orderIndex,
-      thumbnailUrl,
-      isPublished,
-      totalBoles,
-      createdAt,
-      updatedAt,
-      isUnlocked,
-      isCompleted,
-      completedBoles);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        titleNepali,
+        titleEnglish,
+        descriptionNepali,
+        descriptionEnglish,
+        level,
+        orderIndex,
+        thumbnailUrl,
+        isPublished,
+        totalBoles,
+        hasVariations,
+        hasSections,
+        practiceTimeMinutes,
+        const DeepCollectionEquality().hash(_prerequisites),
+        traditionalNotationUrl,
+        videoTutorialUrl,
+        createdAt,
+        updatedAt,
+        isUnlocked,
+        isCompleted,
+        completedBoles
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -448,6 +586,13 @@ abstract class _LessonModel extends LessonModel {
       @JsonKey(name: 'thumbnail_url') final String? thumbnailUrl,
       @JsonKey(name: 'is_published') final bool isPublished,
       @JsonKey(name: 'total_boles') final int totalBoles,
+      @JsonKey(name: 'has_variations') final bool hasVariations,
+      @JsonKey(name: 'has_sections') final bool hasSections,
+      @JsonKey(name: 'practice_time_minutes') final int practiceTimeMinutes,
+      @JsonKey(name: 'prerequisites') final List<String> prerequisites,
+      @JsonKey(name: 'traditional_notation_url')
+      final String? traditionalNotationUrl,
+      @JsonKey(name: 'video_tutorial_url') final String? videoTutorialUrl,
       @JsonKey(name: 'created_at') final DateTime? createdAt,
       @JsonKey(name: 'updated_at') final DateTime? updatedAt,
       final bool isUnlocked,
@@ -488,13 +633,31 @@ abstract class _LessonModel extends LessonModel {
   @override
   @JsonKey(name: 'total_boles')
   int get totalBoles;
+  @override // NEW FIELDS FOR ADVANCED LESSONS
+  @JsonKey(name: 'has_variations')
+  bool get hasVariations;
+  @override
+  @JsonKey(name: 'has_sections')
+  bool get hasSections;
+  @override
+  @JsonKey(name: 'practice_time_minutes')
+  int get practiceTimeMinutes;
+  @override
+  @JsonKey(name: 'prerequisites')
+  List<String> get prerequisites;
+  @override // lesson IDs
+  @JsonKey(name: 'traditional_notation_url')
+  String? get traditionalNotationUrl;
+  @override
+  @JsonKey(name: 'video_tutorial_url')
+  String? get videoTutorialUrl;
   @override
   @JsonKey(name: 'created_at')
   DateTime? get createdAt;
   @override
   @JsonKey(name: 'updated_at')
   DateTime? get updatedAt;
-  @override // Local fields (not from server)
+  @override // Local fields
   bool get isUnlocked;
   @override
   bool get isCompleted;

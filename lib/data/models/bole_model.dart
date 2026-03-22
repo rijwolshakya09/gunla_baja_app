@@ -21,14 +21,28 @@ class BoleModel with _$BoleModel {
     @JsonKey(name: 'audio_url') String? audioUrl,
     @JsonKey(name: 'order_index') required int orderIndex,
     @JsonKey(name: 'difficulty_level') @Default(1) int difficultyLevel,
+
+    // NEW FIELDS FOR INTERMEDIATE/ADVANCED TAALS
+    @JsonKey(name: 'pattern_type')
+    @Default('single')
+    String patternType, // single, repeated, variation
+    @JsonKey(name: 'repetition_count') @Default(1) int repetitionCount,
+    @JsonKey(name: 'is_variation') @Default(false) bool isVariation,
+    @JsonKey(name: 'parent_bole_id') String? parentBoleId, // For variations
+    @JsonKey(name: 'tempo_bpm') int? tempoBpm, // Beats per minute
+    @JsonKey(name: 'time_signature')
+    String? timeSignature, // e.g., "4/4", "7/8"
+    @JsonKey(name: 'notation_image_url')
+    String? notationImageUrl, // Traditional notation
+
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
+
     // Local fields
     @Default(false) bool isCompleted,
     @Default(0) int attempts,
   }) = _BoleModel;
 
-  @override
   Id get isarId => fastHash(id);
 
   factory BoleModel.fromJson(Map<String, dynamic> json) =>

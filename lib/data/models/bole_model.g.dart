@@ -57,33 +57,68 @@ const BoleModelSchema = CollectionSchema(
       name: r'isCompleted',
       type: IsarType.bool,
     ),
-    r'lessonId': PropertySchema(
+    r'isVariation': PropertySchema(
       id: 8,
+      name: r'isVariation',
+      type: IsarType.bool,
+    ),
+    r'lessonId': PropertySchema(
+      id: 9,
       name: r'lessonId',
       type: IsarType.string,
     ),
+    r'notationImageUrl': PropertySchema(
+      id: 10,
+      name: r'notationImageUrl',
+      type: IsarType.string,
+    ),
     r'orderIndex': PropertySchema(
-      id: 9,
+      id: 11,
       name: r'orderIndex',
       type: IsarType.long,
     ),
+    r'parentBoleId': PropertySchema(
+      id: 12,
+      name: r'parentBoleId',
+      type: IsarType.string,
+    ),
+    r'patternType': PropertySchema(
+      id: 13,
+      name: r'patternType',
+      type: IsarType.string,
+    ),
     r'pronunciation': PropertySchema(
-      id: 10,
+      id: 14,
       name: r'pronunciation',
       type: IsarType.string,
     ),
+    r'repetitionCount': PropertySchema(
+      id: 15,
+      name: r'repetitionCount',
+      type: IsarType.long,
+    ),
+    r'tempoBpm': PropertySchema(
+      id: 16,
+      name: r'tempoBpm',
+      type: IsarType.long,
+    ),
     r'textEnglish': PropertySchema(
-      id: 11,
+      id: 17,
       name: r'textEnglish',
       type: IsarType.string,
     ),
     r'textNepali': PropertySchema(
-      id: 12,
+      id: 18,
       name: r'textNepali',
       type: IsarType.string,
     ),
+    r'timeSignature': PropertySchema(
+      id: 19,
+      name: r'timeSignature',
+      type: IsarType.string,
+    ),
     r'updatedAt': PropertySchema(
-      id: 13,
+      id: 20,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -128,9 +163,28 @@ int _boleModelEstimateSize(
   }
   bytesCount += 3 + object.id.length * 3;
   bytesCount += 3 + object.lessonId.length * 3;
+  {
+    final value = object.notationImageUrl;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.parentBoleId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  bytesCount += 3 + object.patternType.length * 3;
   bytesCount += 3 + object.pronunciation.length * 3;
   bytesCount += 3 + object.textEnglish.length * 3;
   bytesCount += 3 + object.textNepali.length * 3;
+  {
+    final value = object.timeSignature;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -148,12 +202,19 @@ void _boleModelSerialize(
   writer.writeLong(offsets[5], object.difficultyLevel);
   writer.writeString(offsets[6], object.id);
   writer.writeBool(offsets[7], object.isCompleted);
-  writer.writeString(offsets[8], object.lessonId);
-  writer.writeLong(offsets[9], object.orderIndex);
-  writer.writeString(offsets[10], object.pronunciation);
-  writer.writeString(offsets[11], object.textEnglish);
-  writer.writeString(offsets[12], object.textNepali);
-  writer.writeDateTime(offsets[13], object.updatedAt);
+  writer.writeBool(offsets[8], object.isVariation);
+  writer.writeString(offsets[9], object.lessonId);
+  writer.writeString(offsets[10], object.notationImageUrl);
+  writer.writeLong(offsets[11], object.orderIndex);
+  writer.writeString(offsets[12], object.parentBoleId);
+  writer.writeString(offsets[13], object.patternType);
+  writer.writeString(offsets[14], object.pronunciation);
+  writer.writeLong(offsets[15], object.repetitionCount);
+  writer.writeLong(offsets[16], object.tempoBpm);
+  writer.writeString(offsets[17], object.textEnglish);
+  writer.writeString(offsets[18], object.textNepali);
+  writer.writeString(offsets[19], object.timeSignature);
+  writer.writeDateTime(offsets[20], object.updatedAt);
 }
 
 BoleModel _boleModelDeserialize(
@@ -171,12 +232,19 @@ BoleModel _boleModelDeserialize(
     difficultyLevel: reader.readLong(offsets[5]),
     id: reader.readString(offsets[6]),
     isCompleted: reader.readBool(offsets[7]),
-    lessonId: reader.readString(offsets[8]),
-    orderIndex: reader.readLong(offsets[9]),
-    pronunciation: reader.readString(offsets[10]),
-    textEnglish: reader.readString(offsets[11]),
-    textNepali: reader.readString(offsets[12]),
-    updatedAt: reader.readDateTimeOrNull(offsets[13]),
+    isVariation: reader.readBool(offsets[8]),
+    lessonId: reader.readString(offsets[9]),
+    notationImageUrl: reader.readStringOrNull(offsets[10]),
+    orderIndex: reader.readLong(offsets[11]),
+    parentBoleId: reader.readStringOrNull(offsets[12]),
+    patternType: reader.readString(offsets[13]),
+    pronunciation: reader.readString(offsets[14]),
+    repetitionCount: reader.readLong(offsets[15]),
+    tempoBpm: reader.readLongOrNull(offsets[16]),
+    textEnglish: reader.readString(offsets[17]),
+    textNepali: reader.readString(offsets[18]),
+    timeSignature: reader.readStringOrNull(offsets[19]),
+    updatedAt: reader.readDateTimeOrNull(offsets[20]),
   );
   return object;
 }
@@ -205,16 +273,30 @@ P _boleModelDeserializeProp<P>(
     case 7:
       return (reader.readBool(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 9:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 10:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 12:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 13:
+      return (reader.readString(offset)) as P;
+    case 14:
+      return (reader.readString(offset)) as P;
+    case 15:
+      return (reader.readLong(offset)) as P;
+    case 16:
+      return (reader.readLongOrNull(offset)) as P;
+    case 17:
+      return (reader.readString(offset)) as P;
+    case 18:
+      return (reader.readString(offset)) as P;
+    case 19:
+      return (reader.readStringOrNull(offset)) as P;
+    case 20:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1090,6 +1172,16 @@ extension BoleModelQueryFilter
     });
   }
 
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> isVariationEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isVariation',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> isarIdEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -1274,6 +1366,160 @@ extension BoleModelQueryFilter
     });
   }
 
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'notationImageUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'notationImageUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'notationImageUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'notationImageUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'notationImageUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'notationImageUrl',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'notationImageUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'notationImageUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'notationImageUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'notationImageUrl',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'notationImageUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      notationImageUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'notationImageUrl',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> orderIndexEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -1324,6 +1570,293 @@ extension BoleModelQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      parentBoleIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'parentBoleId',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      parentBoleIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'parentBoleId',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> parentBoleIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'parentBoleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      parentBoleIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'parentBoleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      parentBoleIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'parentBoleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> parentBoleIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'parentBoleId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      parentBoleIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'parentBoleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      parentBoleIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'parentBoleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      parentBoleIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'parentBoleId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> parentBoleIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'parentBoleId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      parentBoleIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'parentBoleId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      parentBoleIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'parentBoleId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> patternTypeEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'patternType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      patternTypeGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'patternType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> patternTypeLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'patternType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> patternTypeBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'patternType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      patternTypeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'patternType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> patternTypeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'patternType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> patternTypeContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'patternType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> patternTypeMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'patternType',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      patternTypeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'patternType',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      patternTypeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'patternType',
+        value: '',
       ));
     });
   }
@@ -1460,6 +1993,132 @@ extension BoleModelQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'pronunciation',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      repetitionCountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'repetitionCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      repetitionCountGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'repetitionCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      repetitionCountLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'repetitionCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      repetitionCountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'repetitionCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> tempoBpmIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'tempoBpm',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      tempoBpmIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'tempoBpm',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> tempoBpmEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'tempoBpm',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> tempoBpmGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'tempoBpm',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> tempoBpmLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'tempoBpm',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> tempoBpmBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'tempoBpm',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1732,6 +2391,160 @@ extension BoleModelQueryFilter
     });
   }
 
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'timeSignature',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'timeSignature',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'timeSignature',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'timeSignature',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'timeSignature',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'timeSignature',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'timeSignature',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'timeSignature',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'timeSignature',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'timeSignature',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'timeSignature',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition>
+      timeSignatureIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'timeSignature',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<BoleModel, BoleModel, QAfterFilterCondition> updatedAtIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1909,6 +2722,18 @@ extension BoleModelQuerySortBy on QueryBuilder<BoleModel, BoleModel, QSortBy> {
     });
   }
 
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByIsVariation() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isVariation', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByIsVariationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isVariation', Sort.desc);
+    });
+  }
+
   QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByLessonId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lessonId', Sort.asc);
@@ -1918,6 +2743,19 @@ extension BoleModelQuerySortBy on QueryBuilder<BoleModel, BoleModel, QSortBy> {
   QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByLessonIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lessonId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByNotationImageUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notationImageUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy>
+      sortByNotationImageUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notationImageUrl', Sort.desc);
     });
   }
 
@@ -1933,6 +2771,30 @@ extension BoleModelQuerySortBy on QueryBuilder<BoleModel, BoleModel, QSortBy> {
     });
   }
 
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByParentBoleId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentBoleId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByParentBoleIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentBoleId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByPatternType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'patternType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByPatternTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'patternType', Sort.desc);
+    });
+  }
+
   QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByPronunciation() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pronunciation', Sort.asc);
@@ -1942,6 +2804,30 @@ extension BoleModelQuerySortBy on QueryBuilder<BoleModel, BoleModel, QSortBy> {
   QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByPronunciationDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pronunciation', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByRepetitionCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByRepetitionCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionCount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByTempoBpm() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'tempoBpm', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByTempoBpmDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'tempoBpm', Sort.desc);
     });
   }
 
@@ -1966,6 +2852,18 @@ extension BoleModelQuerySortBy on QueryBuilder<BoleModel, BoleModel, QSortBy> {
   QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByTextNepaliDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'textNepali', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByTimeSignature() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeSignature', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> sortByTimeSignatureDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeSignature', Sort.desc);
     });
   }
 
@@ -2082,6 +2980,18 @@ extension BoleModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByIsVariation() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isVariation', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByIsVariationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isVariation', Sort.desc);
+    });
+  }
+
   QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByIsarId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isarId', Sort.asc);
@@ -2106,6 +3016,19 @@ extension BoleModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByNotationImageUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notationImageUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy>
+      thenByNotationImageUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'notationImageUrl', Sort.desc);
+    });
+  }
+
   QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByOrderIndex() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'orderIndex', Sort.asc);
@@ -2118,6 +3041,30 @@ extension BoleModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByParentBoleId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentBoleId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByParentBoleIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentBoleId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByPatternType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'patternType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByPatternTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'patternType', Sort.desc);
+    });
+  }
+
   QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByPronunciation() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pronunciation', Sort.asc);
@@ -2127,6 +3074,30 @@ extension BoleModelQuerySortThenBy
   QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByPronunciationDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'pronunciation', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByRepetitionCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByRepetitionCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'repetitionCount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByTempoBpm() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'tempoBpm', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByTempoBpmDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'tempoBpm', Sort.desc);
     });
   }
 
@@ -2151,6 +3122,18 @@ extension BoleModelQuerySortThenBy
   QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByTextNepaliDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'textNepali', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByTimeSignature() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeSignature', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QAfterSortBy> thenByTimeSignatureDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'timeSignature', Sort.desc);
     });
   }
 
@@ -2223,10 +3206,24 @@ extension BoleModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<BoleModel, BoleModel, QDistinct> distinctByIsVariation() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isVariation');
+    });
+  }
+
   QueryBuilder<BoleModel, BoleModel, QDistinct> distinctByLessonId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lessonId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QDistinct> distinctByNotationImageUrl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'notationImageUrl',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -2236,11 +3233,37 @@ extension BoleModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<BoleModel, BoleModel, QDistinct> distinctByParentBoleId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'parentBoleId', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QDistinct> distinctByPatternType(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'patternType', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<BoleModel, BoleModel, QDistinct> distinctByPronunciation(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'pronunciation',
           caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QDistinct> distinctByRepetitionCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'repetitionCount');
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QDistinct> distinctByTempoBpm() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'tempoBpm');
     });
   }
 
@@ -2255,6 +3278,14 @@ extension BoleModelQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'textNepali', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<BoleModel, BoleModel, QDistinct> distinctByTimeSignature(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'timeSignature',
+          caseSensitive: caseSensitive);
     });
   }
 
@@ -2323,9 +3354,22 @@ extension BoleModelQueryProperty
     });
   }
 
+  QueryBuilder<BoleModel, bool, QQueryOperations> isVariationProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isVariation');
+    });
+  }
+
   QueryBuilder<BoleModel, String, QQueryOperations> lessonIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lessonId');
+    });
+  }
+
+  QueryBuilder<BoleModel, String?, QQueryOperations>
+      notationImageUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'notationImageUrl');
     });
   }
 
@@ -2335,9 +3379,33 @@ extension BoleModelQueryProperty
     });
   }
 
+  QueryBuilder<BoleModel, String?, QQueryOperations> parentBoleIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'parentBoleId');
+    });
+  }
+
+  QueryBuilder<BoleModel, String, QQueryOperations> patternTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'patternType');
+    });
+  }
+
   QueryBuilder<BoleModel, String, QQueryOperations> pronunciationProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'pronunciation');
+    });
+  }
+
+  QueryBuilder<BoleModel, int, QQueryOperations> repetitionCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'repetitionCount');
+    });
+  }
+
+  QueryBuilder<BoleModel, int?, QQueryOperations> tempoBpmProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'tempoBpm');
     });
   }
 
@@ -2350,6 +3418,12 @@ extension BoleModelQueryProperty
   QueryBuilder<BoleModel, String, QQueryOperations> textNepaliProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'textNepali');
+    });
+  }
+
+  QueryBuilder<BoleModel, String?, QQueryOperations> timeSignatureProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'timeSignature');
     });
   }
 
@@ -2375,6 +3449,13 @@ _$_BoleModel _$$_BoleModelFromJson(Map<String, dynamic> json) => _$_BoleModel(
       audioUrl: json['audio_url'] as String?,
       orderIndex: (json['order_index'] as num).toInt(),
       difficultyLevel: (json['difficulty_level'] as num?)?.toInt() ?? 1,
+      patternType: json['pattern_type'] as String? ?? 'single',
+      repetitionCount: (json['repetition_count'] as num?)?.toInt() ?? 1,
+      isVariation: json['is_variation'] as bool? ?? false,
+      parentBoleId: json['parent_bole_id'] as String?,
+      tempoBpm: (json['tempo_bpm'] as num?)?.toInt(),
+      timeSignature: json['time_signature'] as String?,
+      notationImageUrl: json['notation_image_url'] as String?,
       createdAt: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -2397,6 +3478,13 @@ Map<String, dynamic> _$$_BoleModelToJson(_$_BoleModel instance) =>
       'audio_url': instance.audioUrl,
       'order_index': instance.orderIndex,
       'difficulty_level': instance.difficultyLevel,
+      'pattern_type': instance.patternType,
+      'repetition_count': instance.repetitionCount,
+      'is_variation': instance.isVariation,
+      'parent_bole_id': instance.parentBoleId,
+      'tempo_bpm': instance.tempoBpm,
+      'time_signature': instance.timeSignature,
+      'notation_image_url': instance.notationImageUrl,
       'created_at': instance.createdAt?.toIso8601String(),
       'updated_at': instance.updatedAt?.toIso8601String(),
       'isCompleted': instance.isCompleted,

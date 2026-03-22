@@ -66,8 +66,8 @@ class SyncService {
           .map((json) => LessonModel.fromJson(json as Map<String, dynamic>))
           .toList();
 
-      // Save to local database
-      await lessonRepository.saveLessons(lessons);
+      // Save to local database WHILE PRESERVING LOCAL PROGRESS
+      await lessonRepository.saveLessonsPreservingProgress(lessons);
 
       // For each lesson, sync its boles
       for (final lesson in lessons) {
@@ -99,8 +99,8 @@ class SyncService {
           .map((json) => BoleModel.fromJson(json as Map<String, dynamic>))
           .toList();
 
-      // Save to local database
-      await boleRepository.saveBoles(boles);
+      // Save to local database WHILE PRESERVING LOCAL PROGRESS
+      await boleRepository.saveBolesPreservingProgress(boles);
 
       // Update lesson's total boles count
       final lesson = await lessonRepository.getLessonById(lessonId);
@@ -171,24 +171,129 @@ class SyncService {
   /// Perform initial sync on app startup
   Future<void> performInitialSync() async {
     try {
-      // Sync lessons and boles
-      await syncLessons();
+      print('=== Starting Initial Sync ===');
+      // Check if online
+      final online = await isOnline();
+      print('Online status: $online');
 
-      // If user is logged in, sync their progress
-      if (supabase.auth.currentUser != null) {
-        await downloadUserProgress();
+      if (online) {
+        // Try to sync lessons and boles from Supabase
+        try {
+          print('Syncing lessons from Supabase...');
+          await syncLessons();
+          print('Lessons synced successfully');
+        } catch (e) {
+          print('Failed to sync lessons from Supabase: $e');
+          // Continue - we'll work with local data
+        }
+
+        // If user is logged in, sync their progress
+        if (supabase.auth.currentUser != null) {
+          try {
+            print('Syncing user progress...');
+            final userProgress = await downloadUserProgress();
+            // Apply progress to local lessons
+            await _applyProgressToLocalLessons(userProgress);
+            print('User progress synced successfully');
+          } catch (e) {
+            print('Failed to sync user progress: $e');
+            // Continue - local progress will be used
+          }
+        }
+      } else {
+        print('Offline mode - using local data only');
       }
 
-      // Unlock first lesson if no lessons are unlocked
+      // Always ensure first lesson is unlocked for offline/anonymous users
+      await _ensureFirstLessonUnlocked();
+
+      // Debug: Print current progress
+      await _debugPrintProgress();
+      print('=== Initial Sync Complete ===');
+    } catch (e) {
+      // Critical error - ensure we still have basic functionality
+      print('Critical error in initial sync: $e');
+      await _ensureFirstLessonUnlocked();
+    }
+  }
+
+  /// Debug helper to print current progress
+  Future<void> _debugPrintProgress() async {
+    try {
       final lessons = await lessonRepository.getAllLessons();
+      print('\\n=== Current Database State ===');
+      for (final lesson in lessons) {
+        print('Lesson: ${lesson.titleNepali}');
+        print('  - Unlocked: ${lesson.isUnlocked}');
+        print('  - Completed: ${lesson.isCompleted}');
+        print('  - Progress: ${lesson.completedBoles}/${lesson.totalBoles}');
+
+        final boles = await boleRepository.getBolesByLesson(lesson.id);
+        final completedBoles = boles.where((b) => b.isCompleted).length;
+        print('  - Boles completed: $completedBoles/${boles.length}');
+      }
+      print('==============================\\n');
+    } catch (e) {
+      print('Error printing debug info: $e');
+    }
+  }
+
+  /// Ensure first lesson is unlocked
+  Future<void> _ensureFirstLessonUnlocked() async {
+    try {
+      final lessons = await lessonRepository.getAllLessons();
+
+      // If no lessons in database, nothing to unlock
+      if (lessons.isEmpty) {
+        print('No lessons in local database');
+        return;
+      }
+
       final hasUnlocked = lessons.any((l) => l.isUnlocked);
 
-      if (!hasUnlocked && lessons.isNotEmpty) {
-        await lessonRepository.updateLessonUnlockStatus(lessons.first.id, true);
+      if (!hasUnlocked) {
+        // Unlock first lesson (lowest level, lowest order)
+        final firstLesson = lessons.first;
+        await lessonRepository.updateLessonUnlockStatus(firstLesson.id, true);
+        print('First lesson unlocked: ${firstLesson.titleNepali}');
       }
     } catch (e) {
-      // Silent fail - app will work offline
-      print('Initial sync failed: $e');
+      print('Failed to unlock first lesson: $e');
+      // This is a critical error but we don't throw - app can still function
+    }
+  }
+
+  /// Apply downloaded progress to local lessons
+  Future<void> _applyProgressToLocalLessons(
+    List<UserProgressModel> progressList,
+  ) async {
+    for (final progress in progressList) {
+      try {
+        // Update lesson with progress
+        await lessonRepository.updateLessonCompletion(
+          progress.lessonId,
+          progress.isCompleted,
+          progress.completedBoles,
+        );
+
+        // Unlock if completed
+        if (progress.isCompleted) {
+          await lessonRepository.updateLessonUnlockStatus(
+            progress.lessonId,
+            true,
+          );
+          // Also unlock next lesson
+          await lessonRepository.shouldUnlockNextLesson(progress.lessonId);
+        } else if (progress.completedBoles > 0) {
+          // Has some progress, so it should be unlocked
+          await lessonRepository.updateLessonUnlockStatus(
+            progress.lessonId,
+            true,
+          );
+        }
+      } catch (e) {
+        print('Error applying progress for lesson ${progress.lessonId}: $e');
+      }
     }
   }
 

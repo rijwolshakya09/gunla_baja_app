@@ -25,6 +25,36 @@ class BoleRepository {
     });
   }
 
+  /// Save boles while preserving local progress (for syncing)
+  Future<void> saveBolesPreservingProgress(List<BoleModel> boles) async {
+    await _isar.writeTxn(() async {
+      for (final bole in boles) {
+        // Check if bole already exists
+        final existing = await _isar.boleModels
+            .where()
+            .filter()
+            .idEqualTo(bole.id)
+            .findFirst();
+
+        if (existing != null) {
+          // Preserve local completion status
+          final updated = bole.copyWith(
+            isCompleted: existing.isCompleted,
+            attempts: existing.attempts,
+          );
+          await _isar.boleModels.put(updated);
+          print(
+            'Updated bole ${bole.id}, preserved completion: ${existing.isCompleted}',
+          );
+        } else {
+          // New bole, save as is
+          await _isar.boleModels.put(bole);
+          print('Added new bole ${bole.id}');
+        }
+      }
+    });
+  }
+
   // ============ READ ============
 
   /// Get all boles for a lesson
@@ -69,15 +99,31 @@ class BoleRepository {
   /// Mark bole as completed
   Future<void> markBoleCompleted(String id) async {
     await _isar.writeTxn(() async {
-      final bole = await getBoleById(id);
+      final bole = await _isar.boleModels
+          .where()
+          .filter()
+          .idEqualTo(id)
+          .findFirst();
       if (bole != null) {
         final updated = bole.copyWith(
           isCompleted: true,
           attempts: bole.attempts + 1,
         );
         await _isar.boleModels.put(updated);
+        print(
+          'Bole marked as completed: $id, isCompleted=${updated.isCompleted}',
+        );
+      } else {
+        print('Bole not found: $id');
       }
     });
+    // Verify the update
+    final verifyBole = await _isar.boleModels
+        .where()
+        .filter()
+        .idEqualTo(id)
+        .findFirst();
+    print('Verification - Bole $id isCompleted: ${verifyBole?.isCompleted}');
   }
 
   /// Increment bole attempts

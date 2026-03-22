@@ -18,7 +18,7 @@ class AdminLessons extends _$AdminLessons {
 
   Future<List<Map<String, dynamic>>> _fetchLessons() async {
     final supabase = ref.read(supabaseProvider);
-    
+
     try {
       final response = await supabase
           .from('lessons')
@@ -42,7 +42,7 @@ class AdminLessons extends _$AdminLessons {
   /// Delete a lesson
   Future<void> deleteLesson(String id) async {
     final supabase = ref.read(supabaseProvider);
-    
+
     try {
       await supabase.from('lessons').delete().eq('id', id);
       await refresh();
@@ -70,15 +70,19 @@ class AdminService extends _$AdminService {
     final supabase = ref.read(supabaseProvider);
 
     try {
-      final response = await supabase.from('lessons').insert({
-        'title_nepali': titleNepali,
-        'title_english': titleEnglish,
-        'description_nepali': descriptionNepali,
-        'description_english': descriptionEnglish,
-        'level': level,
-        'order_index': orderIndex,
-        'is_published': true,
-      }).select().single();
+      final response = await supabase
+          .from('lessons')
+          .insert({
+            'title_nepali': titleNepali,
+            'title_english': titleEnglish,
+            'description_nepali': descriptionNepali,
+            'description_english': descriptionEnglish,
+            'level': level,
+            'order_index': orderIndex,
+            'is_published': true,
+          })
+          .select()
+          .single();
 
       // Refresh lessons list
       ref.invalidate(adminLessonsProvider);
@@ -116,6 +120,50 @@ class AdminService extends _$AdminService {
       ref.invalidate(adminLessonsProvider);
     } catch (e) {
       throw Exception('Failed to add bole: $e');
+    }
+  }
+
+  /// Add enhanced bole (for intermediate/advanced taals)
+  Future<void> addEnhancedBole({
+    required String lessonId,
+    required String textNepali,
+    required String textEnglish,
+    required String pronunciation,
+    String? descriptionNepali,
+    required int orderIndex,
+    int difficultyLevel = 1,
+    // Enhanced fields
+    String patternType = 'single',
+    int repetitionCount = 1,
+    bool isVariation = false,
+    String? parentBoleId,
+    int? tempoBpm,
+    String? timeSignature,
+  }) async {
+    final supabase = ref.read(supabaseProvider);
+
+    try {
+      await supabase.from('boles').insert({
+        'lesson_id': lessonId,
+        'text_nepali': textNepali,
+        'text_english': textEnglish,
+        'pronunciation': pronunciation,
+        'description_nepali': descriptionNepali,
+        'order_index': orderIndex,
+        'difficulty_level': difficultyLevel,
+        // Enhanced fields
+        'pattern_type': patternType,
+        'repetition_count': repetitionCount,
+        'is_variation': isVariation,
+        'parent_bole_id': parentBoleId,
+        'tempo_bpm': tempoBpm,
+        'time_signature': timeSignature,
+      });
+
+      // Refresh lessons list to update bole count
+      ref.invalidate(adminLessonsProvider);
+    } catch (e) {
+      throw Exception('Failed to add enhanced bole: $e');
     }
   }
 

@@ -21,7 +21,7 @@ final adminLessonsProvider = AutoDisposeAsyncNotifierProvider<AdminLessons,
 );
 
 typedef _$AdminLessons = AutoDisposeAsyncNotifier<List<Map<String, dynamic>>>;
-String _$adminServiceHash() => r'b3356d1044b0b257a208c6bf04cadc81988e0967';
+String _$adminServiceHash() => r'513685804fd8b1a1ca1a450d01fb6aa160f83be0';
 
 /// See also [AdminService].
 @ProviderFor(AdminService)

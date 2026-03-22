@@ -18,23 +18,53 @@ class LessonsPage extends ConsumerWidget {
       backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(
         child: lessonsAsync.when(
-          data: (lessons) => _buildLessonsList(context, lessons),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(
+          data: (lessons) => _buildLessonsList(context, ref, lessons),
+          loading: () => const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                const Gap(16),
-                Text('त्रुटि: $error'),
-                const Gap(16),
-                ElevatedButton(
-                  onPressed: () {
-                    ref.invalidate(lessonsProvider);
-                  },
-                  child: const Text('पुनः प्रयास गर्नुहोस्'),
-                ),
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('पाठहरू लोड गर्दै...', style: TextStyle(fontSize: 16)),
               ],
+            ),
+          ),
+          error: (error, stack) => Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  const Gap(16),
+                  const Text(
+                    'पाठहरू लोड गर्न असफल',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const Gap(8),
+                  Text(
+                    error.toString(),
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    textAlign: TextAlign.center,
+                  ),
+                  const Gap(24),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      ref.invalidate(lessonsProvider);
+                    },
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('पुनः प्रयास गर्नुहोस्'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6366F1),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -42,7 +72,11 @@ class LessonsPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildLessonsList(BuildContext context, List<LessonEntity> lessons) {
+  Widget _buildLessonsList(
+    BuildContext context,
+    WidgetRef ref,
+    List<LessonEntity> lessons,
+  ) {
     if (lessons.isEmpty) {
       return Center(
         child: Column(

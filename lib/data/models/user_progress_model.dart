@@ -22,7 +22,6 @@ class UserProgressModel with _$UserProgressModel {
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
   }) = _UserProgressModel;
 
-  @override
   Id get isarId => fastHash(id);
 
   double get progressPercentage {

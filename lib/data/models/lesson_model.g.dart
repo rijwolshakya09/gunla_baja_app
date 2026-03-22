@@ -37,60 +37,90 @@ const LessonModelSchema = CollectionSchema(
       name: r'descriptionNepali',
       type: IsarType.string,
     ),
-    r'id': PropertySchema(
+    r'hasSections': PropertySchema(
       id: 4,
+      name: r'hasSections',
+      type: IsarType.bool,
+    ),
+    r'hasVariations': PropertySchema(
+      id: 5,
+      name: r'hasVariations',
+      type: IsarType.bool,
+    ),
+    r'id': PropertySchema(
+      id: 6,
       name: r'id',
       type: IsarType.string,
     ),
     r'isCompleted': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'isCompleted',
       type: IsarType.bool,
     ),
     r'isPublished': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'isPublished',
       type: IsarType.bool,
     ),
     r'isUnlocked': PropertySchema(
-      id: 7,
+      id: 9,
       name: r'isUnlocked',
       type: IsarType.bool,
     ),
     r'level': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'level',
       type: IsarType.long,
     ),
     r'orderIndex': PropertySchema(
-      id: 9,
+      id: 11,
       name: r'orderIndex',
       type: IsarType.long,
     ),
+    r'practiceTimeMinutes': PropertySchema(
+      id: 12,
+      name: r'practiceTimeMinutes',
+      type: IsarType.long,
+    ),
+    r'prerequisites': PropertySchema(
+      id: 13,
+      name: r'prerequisites',
+      type: IsarType.stringList,
+    ),
     r'thumbnailUrl': PropertySchema(
-      id: 10,
+      id: 14,
       name: r'thumbnailUrl',
       type: IsarType.string,
     ),
     r'titleEnglish': PropertySchema(
-      id: 11,
+      id: 15,
       name: r'titleEnglish',
       type: IsarType.string,
     ),
     r'titleNepali': PropertySchema(
-      id: 12,
+      id: 16,
       name: r'titleNepali',
       type: IsarType.string,
     ),
     r'totalBoles': PropertySchema(
-      id: 13,
+      id: 17,
       name: r'totalBoles',
       type: IsarType.long,
     ),
+    r'traditionalNotationUrl': PropertySchema(
+      id: 18,
+      name: r'traditionalNotationUrl',
+      type: IsarType.string,
+    ),
     r'updatedAt': PropertySchema(
-      id: 14,
+      id: 19,
       name: r'updatedAt',
       type: IsarType.dateTime,
+    ),
+    r'videoTutorialUrl': PropertySchema(
+      id: 20,
+      name: r'videoTutorialUrl',
+      type: IsarType.string,
     )
   },
   estimateSize: _lessonModelEstimateSize,
@@ -126,6 +156,13 @@ int _lessonModelEstimateSize(
     }
   }
   bytesCount += 3 + object.id.length * 3;
+  bytesCount += 3 + object.prerequisites.length * 3;
+  {
+    for (var i = 0; i < object.prerequisites.length; i++) {
+      final value = object.prerequisites[i];
+      bytesCount += value.length * 3;
+    }
+  }
   {
     final value = object.thumbnailUrl;
     if (value != null) {
@@ -134,6 +171,18 @@ int _lessonModelEstimateSize(
   }
   bytesCount += 3 + object.titleEnglish.length * 3;
   bytesCount += 3 + object.titleNepali.length * 3;
+  {
+    final value = object.traditionalNotationUrl;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.videoTutorialUrl;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -147,17 +196,23 @@ void _lessonModelSerialize(
   writer.writeDateTime(offsets[1], object.createdAt);
   writer.writeString(offsets[2], object.descriptionEnglish);
   writer.writeString(offsets[3], object.descriptionNepali);
-  writer.writeString(offsets[4], object.id);
-  writer.writeBool(offsets[5], object.isCompleted);
-  writer.writeBool(offsets[6], object.isPublished);
-  writer.writeBool(offsets[7], object.isUnlocked);
-  writer.writeLong(offsets[8], object.level);
-  writer.writeLong(offsets[9], object.orderIndex);
-  writer.writeString(offsets[10], object.thumbnailUrl);
-  writer.writeString(offsets[11], object.titleEnglish);
-  writer.writeString(offsets[12], object.titleNepali);
-  writer.writeLong(offsets[13], object.totalBoles);
-  writer.writeDateTime(offsets[14], object.updatedAt);
+  writer.writeBool(offsets[4], object.hasSections);
+  writer.writeBool(offsets[5], object.hasVariations);
+  writer.writeString(offsets[6], object.id);
+  writer.writeBool(offsets[7], object.isCompleted);
+  writer.writeBool(offsets[8], object.isPublished);
+  writer.writeBool(offsets[9], object.isUnlocked);
+  writer.writeLong(offsets[10], object.level);
+  writer.writeLong(offsets[11], object.orderIndex);
+  writer.writeLong(offsets[12], object.practiceTimeMinutes);
+  writer.writeStringList(offsets[13], object.prerequisites);
+  writer.writeString(offsets[14], object.thumbnailUrl);
+  writer.writeString(offsets[15], object.titleEnglish);
+  writer.writeString(offsets[16], object.titleNepali);
+  writer.writeLong(offsets[17], object.totalBoles);
+  writer.writeString(offsets[18], object.traditionalNotationUrl);
+  writer.writeDateTime(offsets[19], object.updatedAt);
+  writer.writeString(offsets[20], object.videoTutorialUrl);
 }
 
 LessonModel _lessonModelDeserialize(
@@ -171,17 +226,23 @@ LessonModel _lessonModelDeserialize(
     createdAt: reader.readDateTimeOrNull(offsets[1]),
     descriptionEnglish: reader.readStringOrNull(offsets[2]),
     descriptionNepali: reader.readStringOrNull(offsets[3]),
-    id: reader.readString(offsets[4]),
-    isCompleted: reader.readBool(offsets[5]),
-    isPublished: reader.readBool(offsets[6]),
-    isUnlocked: reader.readBool(offsets[7]),
-    level: reader.readLong(offsets[8]),
-    orderIndex: reader.readLong(offsets[9]),
-    thumbnailUrl: reader.readStringOrNull(offsets[10]),
-    titleEnglish: reader.readString(offsets[11]),
-    titleNepali: reader.readString(offsets[12]),
-    totalBoles: reader.readLong(offsets[13]),
-    updatedAt: reader.readDateTimeOrNull(offsets[14]),
+    hasSections: reader.readBool(offsets[4]),
+    hasVariations: reader.readBool(offsets[5]),
+    id: reader.readString(offsets[6]),
+    isCompleted: reader.readBool(offsets[7]),
+    isPublished: reader.readBool(offsets[8]),
+    isUnlocked: reader.readBool(offsets[9]),
+    level: reader.readLong(offsets[10]),
+    orderIndex: reader.readLong(offsets[11]),
+    practiceTimeMinutes: reader.readLong(offsets[12]),
+    prerequisites: reader.readStringList(offsets[13]) ?? [],
+    thumbnailUrl: reader.readStringOrNull(offsets[14]),
+    titleEnglish: reader.readString(offsets[15]),
+    titleNepali: reader.readString(offsets[16]),
+    totalBoles: reader.readLong(offsets[17]),
+    traditionalNotationUrl: reader.readStringOrNull(offsets[18]),
+    updatedAt: reader.readDateTimeOrNull(offsets[19]),
+    videoTutorialUrl: reader.readStringOrNull(offsets[20]),
   );
   return object;
 }
@@ -202,27 +263,39 @@ P _lessonModelDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 5:
       return (reader.readBool(offset)) as P;
     case 6:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 7:
       return (reader.readBool(offset)) as P;
     case 8:
-      return (reader.readLong(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 9:
-      return (reader.readLong(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 10:
-      return (reader.readStringOrNull(offset)) as P;
-    case 11:
-      return (reader.readString(offset)) as P;
-    case 12:
-      return (reader.readString(offset)) as P;
-    case 13:
       return (reader.readLong(offset)) as P;
+    case 11:
+      return (reader.readLong(offset)) as P;
+    case 12:
+      return (reader.readLong(offset)) as P;
+    case 13:
+      return (reader.readStringList(offset) ?? []) as P;
     case 14:
+      return (reader.readStringOrNull(offset)) as P;
+    case 15:
+      return (reader.readString(offset)) as P;
+    case 16:
+      return (reader.readString(offset)) as P;
+    case 17:
+      return (reader.readLong(offset)) as P;
+    case 18:
+      return (reader.readStringOrNull(offset)) as P;
+    case 19:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 20:
+      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -760,6 +833,26 @@ extension LessonModelQueryFilter
     });
   }
 
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      hasSectionsEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hasSections',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      hasVariationsEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hasVariations',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition> idEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1081,6 +1174,287 @@ extension LessonModelQueryFilter
         upper: upper,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      practiceTimeMinutesEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'practiceTimeMinutes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      practiceTimeMinutesGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'practiceTimeMinutes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      practiceTimeMinutesLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'practiceTimeMinutes',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      practiceTimeMinutesBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'practiceTimeMinutes',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'prerequisites',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'prerequisites',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'prerequisites',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'prerequisites',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'prerequisites',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'prerequisites',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesElementContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'prerequisites',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesElementMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'prerequisites',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'prerequisites',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'prerequisites',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'prerequisites',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'prerequisites',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'prerequisites',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'prerequisites',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'prerequisites',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      prerequisitesLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'prerequisites',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
     });
   }
 
@@ -1567,6 +1941,162 @@ extension LessonModelQueryFilter
   }
 
   QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'traditionalNotationUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'traditionalNotationUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'traditionalNotationUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'traditionalNotationUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'traditionalNotationUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'traditionalNotationUrl',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'traditionalNotationUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'traditionalNotationUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlContains(String value,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'traditionalNotationUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'traditionalNotationUrl',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'traditionalNotationUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      traditionalNotationUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'traditionalNotationUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
       updatedAtIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1639,6 +2169,160 @@ extension LessonModelQueryFilter
       ));
     });
   }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'videoTutorialUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'videoTutorialUrl',
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'videoTutorialUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'videoTutorialUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'videoTutorialUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'videoTutorialUrl',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'videoTutorialUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'videoTutorialUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'videoTutorialUrl',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'videoTutorialUrl',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'videoTutorialUrl',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterFilterCondition>
+      videoTutorialUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'videoTutorialUrl',
+        value: '',
+      ));
+    });
+  }
 }
 
 extension LessonModelQueryObject
@@ -1699,6 +2383,31 @@ extension LessonModelQuerySortBy
       sortByDescriptionNepaliDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'descriptionNepali', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy> sortByHasSections() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasSections', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy> sortByHasSectionsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasSections', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy> sortByHasVariations() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasVariations', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      sortByHasVariationsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasVariations', Sort.desc);
     });
   }
 
@@ -1774,6 +2483,20 @@ extension LessonModelQuerySortBy
     });
   }
 
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      sortByPracticeTimeMinutes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'practiceTimeMinutes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      sortByPracticeTimeMinutesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'practiceTimeMinutes', Sort.desc);
+    });
+  }
+
   QueryBuilder<LessonModel, LessonModel, QAfterSortBy> sortByThumbnailUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'thumbnailUrl', Sort.asc);
@@ -1824,6 +2547,20 @@ extension LessonModelQuerySortBy
     });
   }
 
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      sortByTraditionalNotationUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'traditionalNotationUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      sortByTraditionalNotationUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'traditionalNotationUrl', Sort.desc);
+    });
+  }
+
   QueryBuilder<LessonModel, LessonModel, QAfterSortBy> sortByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.asc);
@@ -1833,6 +2570,20 @@ extension LessonModelQuerySortBy
   QueryBuilder<LessonModel, LessonModel, QAfterSortBy> sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      sortByVideoTutorialUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'videoTutorialUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      sortByVideoTutorialUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'videoTutorialUrl', Sort.desc);
     });
   }
 }
@@ -1889,6 +2640,31 @@ extension LessonModelQuerySortThenBy
       thenByDescriptionNepaliDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'descriptionNepali', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy> thenByHasSections() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasSections', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy> thenByHasSectionsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasSections', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy> thenByHasVariations() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasVariations', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      thenByHasVariationsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasVariations', Sort.desc);
     });
   }
 
@@ -1976,6 +2752,20 @@ extension LessonModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      thenByPracticeTimeMinutes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'practiceTimeMinutes', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      thenByPracticeTimeMinutesDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'practiceTimeMinutes', Sort.desc);
+    });
+  }
+
   QueryBuilder<LessonModel, LessonModel, QAfterSortBy> thenByThumbnailUrl() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'thumbnailUrl', Sort.asc);
@@ -2026,6 +2816,20 @@ extension LessonModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      thenByTraditionalNotationUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'traditionalNotationUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      thenByTraditionalNotationUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'traditionalNotationUrl', Sort.desc);
+    });
+  }
+
   QueryBuilder<LessonModel, LessonModel, QAfterSortBy> thenByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.asc);
@@ -2035,6 +2839,20 @@ extension LessonModelQuerySortThenBy
   QueryBuilder<LessonModel, LessonModel, QAfterSortBy> thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      thenByVideoTutorialUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'videoTutorialUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QAfterSortBy>
+      thenByVideoTutorialUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'videoTutorialUrl', Sort.desc);
     });
   }
 }
@@ -2066,6 +2884,18 @@ extension LessonModelQueryWhereDistinct
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'descriptionNepali',
           caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QDistinct> distinctByHasSections() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hasSections');
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QDistinct> distinctByHasVariations() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hasVariations');
     });
   }
 
@@ -2106,6 +2936,19 @@ extension LessonModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<LessonModel, LessonModel, QDistinct>
+      distinctByPracticeTimeMinutes() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'practiceTimeMinutes');
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QDistinct> distinctByPrerequisites() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'prerequisites');
+    });
+  }
+
   QueryBuilder<LessonModel, LessonModel, QDistinct> distinctByThumbnailUrl(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2133,9 +2976,25 @@ extension LessonModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<LessonModel, LessonModel, QDistinct>
+      distinctByTraditionalNotationUrl({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'traditionalNotationUrl',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<LessonModel, LessonModel, QDistinct> distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'updatedAt');
+    });
+  }
+
+  QueryBuilder<LessonModel, LessonModel, QDistinct> distinctByVideoTutorialUrl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'videoTutorialUrl',
+          caseSensitive: caseSensitive);
     });
   }
 }
@@ -2171,6 +3030,18 @@ extension LessonModelQueryProperty
       descriptionNepaliProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'descriptionNepali');
+    });
+  }
+
+  QueryBuilder<LessonModel, bool, QQueryOperations> hasSectionsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hasSections');
+    });
+  }
+
+  QueryBuilder<LessonModel, bool, QQueryOperations> hasVariationsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hasVariations');
     });
   }
 
@@ -2210,6 +3081,20 @@ extension LessonModelQueryProperty
     });
   }
 
+  QueryBuilder<LessonModel, int, QQueryOperations>
+      practiceTimeMinutesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'practiceTimeMinutes');
+    });
+  }
+
+  QueryBuilder<LessonModel, List<String>, QQueryOperations>
+      prerequisitesProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'prerequisites');
+    });
+  }
+
   QueryBuilder<LessonModel, String?, QQueryOperations> thumbnailUrlProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'thumbnailUrl');
@@ -2234,9 +3119,23 @@ extension LessonModelQueryProperty
     });
   }
 
+  QueryBuilder<LessonModel, String?, QQueryOperations>
+      traditionalNotationUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'traditionalNotationUrl');
+    });
+  }
+
   QueryBuilder<LessonModel, DateTime?, QQueryOperations> updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'updatedAt');
+    });
+  }
+
+  QueryBuilder<LessonModel, String?, QQueryOperations>
+      videoTutorialUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'videoTutorialUrl');
     });
   }
 }
@@ -2257,6 +3156,16 @@ _$_LessonModel _$$_LessonModelFromJson(Map<String, dynamic> json) =>
       thumbnailUrl: json['thumbnail_url'] as String?,
       isPublished: json['is_published'] as bool? ?? false,
       totalBoles: (json['total_boles'] as num?)?.toInt() ?? 0,
+      hasVariations: json['has_variations'] as bool? ?? false,
+      hasSections: json['has_sections'] as bool? ?? false,
+      practiceTimeMinutes:
+          (json['practice_time_minutes'] as num?)?.toInt() ?? 10,
+      prerequisites: (json['prerequisites'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      traditionalNotationUrl: json['traditional_notation_url'] as String?,
+      videoTutorialUrl: json['video_tutorial_url'] as String?,
       createdAt: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -2280,6 +3189,12 @@ Map<String, dynamic> _$$_LessonModelToJson(_$_LessonModel instance) =>
       'thumbnail_url': instance.thumbnailUrl,
       'is_published': instance.isPublished,
       'total_boles': instance.totalBoles,
+      'has_variations': instance.hasVariations,
+      'has_sections': instance.hasSections,
+      'practice_time_minutes': instance.practiceTimeMinutes,
+      'prerequisites': instance.prerequisites,
+      'traditional_notation_url': instance.traditionalNotationUrl,
+      'video_tutorial_url': instance.videoTutorialUrl,
       'created_at': instance.createdAt?.toIso8601String(),
       'updated_at': instance.updatedAt?.toIso8601String(),
       'isUnlocked': instance.isUnlocked,

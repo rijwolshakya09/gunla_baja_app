@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/enhanced_bole_form.dart';
 import '../widgets/lesson_form.dart';
 import '../widgets/bole_form.dart';
 import '../widgets/lessons_list.dart';
@@ -60,6 +61,14 @@ class AdminPage extends ConsumerWidget {
                   title: 'Add Bole',
                   isSelected: selectedTab == 2,
                 ),
+                _buildNavItem(
+                  context: context,
+                  ref: ref,
+                  index: 3,
+                  icon: Icons.auto_awesome,
+                  title: 'Add Bole (Advanced)',
+                  isSelected: selectedTab == 3,
+                ),
                 const Divider(),
                 ListTile(
                   leading: const Icon(Icons.home, color: Color(0xFF6366F1)),
@@ -76,7 +85,12 @@ class AdminPage extends ConsumerWidget {
           Expanded(
             child: IndexedStack(
               index: selectedTab,
-              children: const [AdminLessonsList(), LessonForm(), BoleForm()],
+              children: const [
+                AdminLessonsList(),
+                LessonForm(),
+                BoleForm(),
+                EnhancedBoleForm(),
+              ],
             ),
           ),
         ],

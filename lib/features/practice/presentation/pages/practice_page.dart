@@ -43,20 +43,46 @@ class PracticePage extends ConsumerWidget {
           }
           return _buildPracticeScreen(context, ref, state);
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
+        loading: () => const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('त्रुटि: $error'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => context.pop(),
-                child: const Text('फिर्ता जानुहोस्'),
-              ),
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text('अभ्यास तयार गर्दै...', style: TextStyle(fontSize: 16)),
             ],
+          ),
+        ),
+        error: (error, stack) => Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                const SizedBox(height: 16),
+                const Text(
+                  'अभ्यास लोड गर्न असफल',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  error.toString(),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () => context.pop(),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('फिर्ता जानुहोस्'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6366F1),
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -76,22 +102,88 @@ class PracticePage extends ConsumerWidget {
 
     return Column(
       children: [
-        // Progress Bar
-        PracticeProgressBar(
-          current: state.currentIndex + 1,
-          total: state.totalCount,
-          percentage: state.progressPercentage,
+        // Progress Indicator
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'बोले ${state.currentIndex + 1}/${state.totalCount}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF6366F1),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: state.progressPercentage / 100,
+                        backgroundColor: Colors.grey[200],
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          Color(0xFF6366F1),
+                        ),
+                        minHeight: 6,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                '${state.progressPercentage.toStringAsFixed(0)}%',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF6366F1),
+                ),
+              ),
+            ],
+          ),
         ),
 
-        // Bole Display
+        // Bole Display - Swipeable
         Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: BoleDisplayCard(
-              bole: currentBole,
-              boleNumber: state.currentIndex + 1,
-              totalBoles: state.totalCount,
-            ).animate().fadeIn(duration: 300.ms).slideX(begin: 0.2, end: 0),
+          child: PageView.builder(
+            itemCount: state.totalCount,
+            controller: PageController(initialPage: state.currentIndex),
+            onPageChanged: (index) {
+              if (index > state.currentIndex) {
+                ref.read(practiceSessionProvider(lessonId).notifier).skipBole();
+              } else if (index < state.currentIndex) {
+                ref
+                    .read(practiceSessionProvider(lessonId).notifier)
+                    .previousBole();
+              }
+            },
+            itemBuilder: (context, index) {
+              if (index == state.currentIndex) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: BoleDisplayCard(
+                    bole: currentBole,
+                    boleNumber: state.currentIndex + 1,
+                    totalBoles: state.totalCount,
+                  ).animate().fadeIn(duration: 300.ms),
+                );
+              }
+              return const SizedBox();
+            },
           ),
         ),
 
@@ -122,6 +214,8 @@ class PracticePage extends ConsumerWidget {
   ) {
     final duration = DateTime.now().difference(state.startTime);
     final minutes = duration.inMinutes;
+    final completedCount = state.boles.where((b) => b.isCompleted).length;
+    final totalCount = state.boles.length;
 
     return Center(
       child: Padding(
@@ -188,7 +282,7 @@ class PracticePage extends ConsumerWidget {
                   _buildStatRow(
                     '🎯',
                     'सम्पूर्ण बोलेहरू',
-                    '${state.completedCount}/${state.totalCount}',
+                    '$completedCount/$totalCount',
                   ),
                   const Divider(height: 32),
                   _buildStatRow('⏱️', 'समय लाग्यो', '$minutes मिनेट'),

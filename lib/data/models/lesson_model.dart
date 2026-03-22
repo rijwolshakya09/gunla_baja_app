@@ -21,9 +21,23 @@ class LessonModel with _$LessonModel {
     @JsonKey(name: 'thumbnail_url') String? thumbnailUrl,
     @JsonKey(name: 'is_published') @Default(false) bool isPublished,
     @JsonKey(name: 'total_boles') @Default(0) int totalBoles,
+
+    // NEW FIELDS FOR ADVANCED LESSONS
+    @JsonKey(name: 'has_variations') @Default(false) bool hasVariations,
+    @JsonKey(name: 'has_sections') @Default(false) bool hasSections,
+    @JsonKey(name: 'practice_time_minutes')
+    @Default(10)
+    int practiceTimeMinutes,
+    @JsonKey(name: 'prerequisites')
+    @Default([])
+    List<String> prerequisites, // lesson IDs
+    @JsonKey(name: 'traditional_notation_url') String? traditionalNotationUrl,
+    @JsonKey(name: 'video_tutorial_url') String? videoTutorialUrl,
+
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
-    // Local fields (not from server)
+
+    // Local fields
     @Default(false) bool isUnlocked,
     @Default(false) bool isCompleted,
     @Default(0) int completedBoles,
